@@ -1,0 +1,98 @@
+<p id="demo-1" draggable="true" style="background-color: yellow; border: 1px solid black; width: 75px;">Drag me 1!</p>
+<p id="demo-2" draggable="true" style="background-color: yellow; border: 1px solid black; width: 75px;">Drag me 2!</p>
+<img id="testImage" src="https://www.w3schools.com/js/pic_bulbon.gif" width="30" ">
+
+<div class=" droptarget-1" id="droptarget-1">Drop 1 here!</div>
+<div class="droptarget-2" id="droptarget-2">Drop 2 here!</div>
+
+<script>
+    // Events fired on the drag target
+
+    let iteration = 100;
+    let currentIteration = 0;
+
+    let dropTargetMapping = {
+        "demo-1": "droptarget-1",
+        "demo-2": "droptarget-2",
+    }
+
+    document.addEventListener("dragstart", function (event) {
+
+        // The dataTransfer.setData() method sets the data type and the value of the dragged data
+        event.dataTransfer.setData("Text", "Text");
+        event.dataTransfer.setData("Text-2", "Text-2");
+
+        // Will allow us to draw an image on the drag
+        // event.dataTransfer.setDragImage(document.getElementById("testImage"), 0, 0)
+        console.log(event.dataTransfer.getData("Text-2"));
+
+        // Output some text when starting to drag the p element
+        // document.getElementById("demo").innerHTML = "Started to drag the p element.";
+
+        // Change the opacity of the draggable element
+        event.target.style.opacity = "0.1";
+    });
+
+    // While dragging the p element, change the color of the output text
+    document.addEventListener("drag", function (event) {
+        // get x, y position
+        if (currentIteration % iteration === 0) {
+            // The Element that is being dragged
+            rect = event.target.getBoundingClientRect();
+
+            // X, Y are mouse events
+            // console.log(event.clientX, event.clientY, rect);
+            console.log(dropTargetMapping[event.target.id], event.target.id)
+        }
+        currentIteration++;
+        document.getElementById(dropTargetMapping[event.target.id]).style.color = "red";
+        document.getElementById(dropTargetMapping[event.target.id]).style.border = "3px dotted red";
+    });
+
+    // Output some text when finished dragging the p element and reset the opacity
+    document.addEventListener("dragend", function (event) {
+        document.getElementById(event.target.id).innerText = "Finished dragging the p element.";
+        event.target.style.opacity = "0.1";
+    });
+
+
+    // Events fired on the drop target
+
+    // When the draggable p element enters the droptarget, change the DIVS's border style
+    document.addEventListener("dragenter", function (event) {
+        if (currentIteration % iteration === 0) {
+            console.log(event.target.className, dropTargetMapping[event.target.id])
+        }
+        // if (event.target.className === dropTargetMapping[event.target.id]) {
+        //     event.target.style.border = "3px dotted red";
+        // }
+    });
+
+    // By default, data/elements cannot be dropped in other elements. To allow a drop, we must prevent the default handling of the element
+    document.addEventListener("dragover", function (event) {
+        event.preventDefault();
+    });
+
+    // When the draggable p element leaves the droptarget, reset the DIVS's border style
+    document.addEventListener("dragleave", function (event) {
+        if (event.target.className == "droptarget") {
+            event.target.style.border = "";
+        }
+    });
+
+    /* On drop - Prevent the browser default handling of the data (default is open as link on drop)
+    Reset the color of the output text and DIV's border color
+    Get the dragged data with the dataTransfer.getData() method
+    The dragged data is the id of the dragged element ("drag1")
+    Append the dragged element into the drop element
+    */
+    document.addEventListener("drop", function (event) {
+        event.preventDefault();
+        if (event.target.className == "droptarget") {
+            document.getElementById(event.target.id).style.color = "";
+            event.target.style.border = "";
+            var data = event.dataTransfer.getData("Text");
+            event.target.appendChild(document.getElementById(data));
+        }
+    });
+</script>
