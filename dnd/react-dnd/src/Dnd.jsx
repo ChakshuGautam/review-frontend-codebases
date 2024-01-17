@@ -28,8 +28,11 @@ const DragAndDrop = () => {
   };
 
   const handleDragEnd = (event) => {
-    if(document.getElementById(dropTargetMapping[event.target.id]).innerText !== "Dropped!"){
+    const dropZone = document.getElementById(dropTargetMapping[event.target.id]);
+    if (dropZone && dropZone.innerText !== 'Dropped!') {
       event.target.style.opacity = '1';
+      dropZone.style.color = 'black';
+      dropZone.style.border = '';
     }
   };
 
@@ -55,19 +58,15 @@ const DragAndDrop = () => {
 
   const handleDrop = (event) => {
     event.preventDefault();
-    if (event.target.className === 'droptarget-1') {
-      document.getElementById(event.target.id).style.color = '';
-      document.getElementById(event.target.id).style.border = '';
-      const data = event.dataTransfer.getData('Text-1');
-      document.getElementById(event.target.id).innerText = 'Dropped!';
-      event.target.appendChild(document.getElementById(data));
-    } else if (event.target.className === 'droptarget-2') {
-      document.getElementById(event.target.id).style.color = '';
-      document.getElementById(event.target.id).style.border = '';
-      const data = event.dataTransfer.getData('Text-2');
-      document.getElementById(event.target.id).innerText = 'Dropped!';
-      event.target.appendChild(document.getElementById(data));
-    }
+    const targetId = event.target.className.charAt(
+      event.target.className.length - 1
+    );
+    const dropZone = document.getElementById(event.target.id);
+    dropZone.style.color = '';
+    dropZone.style.border = '';
+    const data = event.dataTransfer.getData(`Text-${targetId}`);
+    dropZone.innerText = 'Dropped!';
+    dropZone.appendChild(document.getElementById(data));
   };
 
   return (
